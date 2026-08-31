@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────
+// TANAMAN
+// ─────────────────────────────────────────
+model Plant {
+  id                     String      @id @default(cuid())
+  name                   String
+  type                   String
+  lokasi_bedeng          String?
+  planting_date          DateTime
+  estimated_harvest_date DateTime
+  photo_url              String?
+  description            String?
+  cara_tanam             String?
+  manfaat                String?
+  catatan_pengelola      String?
+  status                 PlantStatus @default(TUMBUH)
+  created_at             DateTime    @default(now())
+  updated_at             DateTime    @updatedAt
+
+  @@map("plants")
+}
+
+// ─────────────────────────────────────────
+// PROFIL KEBUN
+// ─────────────────────────────────────────
+model GardenProfile {
+  id          String    @id @default(cuid())
+  nama        String
+  deskripsi   String?
+  lokasi      String?
+  luas_area   String?
+  visi        String?
+  misi        String?
+  founded_at  DateTime?
+  foto_url    String?
+  updated_at  DateTime  @updatedAt
+
+  @@map("garden_profiles")
+}
+
+// ─────────────────────────────────────────
+// LOG AKTIVITAS
+// ─────────────────────────────────────────
+model ActivityLog {
+  id         String   @id @default(cuid())
+  aksi       String   // "tambah_tanaman" | "update_tanaman" | "hapus_tanaman" | "panen"
+  target_id  String?  // ID tanaman yang terdampak
+  deskripsi  String?
+  created_at DateTime @default(now())
+
+  @@map("activity_logs")
+}
+
+// ─────────────────────────────────────────
+// USER / PENGELOLA
+// ─────────────────────────────────────────
+model User {
+  id         String   @id @default(cuid())
+  username   String   @unique
+  password   String   // Password (plain text atau hash)
+  name       String
+  role       String   @default("ADMIN")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ─────────────────────────────────────────
+// ENUM
+// ─────────────────────────────────────────
+enum PlantStatus {
+  TUMBUH
+  SIAP_PANEN
+  PANEN
+  SELESAI
+}
