@@ -95,7 +95,7 @@ main().then(() => {
     setInterval(async () => {
       try {
         const res = await fetch(`${process.env.SELF_URL}/api/health`);
-        const data = await res.json();
+        const data = (await res.json()) as any;
         console.log(`[keep-alive] ping OK — ${data.timestamp}`);
       } catch (err) {
         console.warn('[keep-alive] ping gagal:', err);
