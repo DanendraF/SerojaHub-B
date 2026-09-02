@@ -14,10 +14,33 @@ datasource db {
 // ─────────────────────────────────────────
 // TANAMAN
 // ─────────────────────────────────────────
+// ──────────────────────────────────────────────────────
+// JENIS TANAMAN (1 jenis = 1 QR code)
+// ──────────────────────────────────────────────────────
+model PlantSpecies {
+  id          String   @id @default(cuid())
+  name        String   // e.g. "Terong Ungu", "Tomat Ceri"
+  category    String   // "Buah" | "Sayur"
+  description String?
+  manfaat     String?
+  cara_tanam  String?
+  photo_url   String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  plants      Plant[]
+
+  @@map("plant_species")
+}
+
+// ──────────────────────────────────────────────────────
+// TANAMAN (record per bedeng, relasi ke PlantSpecies)
+// ──────────────────────────────────────────────────────
 model Plant {
-  id                     String      @id @default(cuid())
+  id                     String        @id @default(cuid())
   name                   String
   type                   String
+  speciesId              String?
+  species                PlantSpecies? @relation(fields: [speciesId], references: [id])
   lokasi_bedeng          String?
   planting_date          DateTime
   estimated_harvest_date DateTime

@@ -57,6 +57,7 @@ plantsRouter.get(
             ],
           }),
         },
+        include: { species: true },
         orderBy: { created_at: 'desc' },
       });
 
@@ -75,7 +76,10 @@ plantsRouter.get(
   handleValidationErrors,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const plant = await prisma.plant.findUnique({ where: { id: str(req.params.id) } });
+      const plant = await prisma.plant.findUnique({ 
+        where: { id: str(req.params.id) },
+        include: { species: true } 
+      });
 
       if (!plant) {
         return next(createError('Tanaman tidak ditemukan.', 404));
@@ -96,6 +100,7 @@ plantsRouter.post(
   [
     body('name').notEmpty().withMessage('Nama tanaman wajib diisi').trim(),
     body('type').notEmpty().withMessage('Jenis tanaman wajib diisi').trim(),
+    body('speciesId').optional().trim(),
     body('planting_date').notEmpty().isISO8601().withMessage('Tanggal tanam tidak valid'),
     body('estimated_harvest_date')
       .notEmpty()
@@ -117,7 +122,7 @@ plantsRouter.post(
     try {
       const body = req.body as Record<string, string | undefined>;
       const {
-        name, type, lokasi_bedeng, planting_date,
+        name, type, speciesId, lokasi_bedeng, planting_date,
         estimated_harvest_date, photo_url, description,
         cara_tanam, manfaat, catatan_pengelola, status,
       } = body;
@@ -126,6 +131,7 @@ plantsRouter.post(
         data: {
           name: name!,
           type: type!,
+          speciesId: speciesId ?? null,
           lokasi_bedeng: lokasi_bedeng ?? null,
           planting_date: new Date(planting_date!),
           estimated_harvest_date: new Date(estimated_harvest_date!),
@@ -167,6 +173,7 @@ plantsRouter.put(
     param('id').notEmpty(),
     body('name').optional().notEmpty().trim(),
     body('type').optional().notEmpty().trim(),
+    body('speciesId').optional().trim(),
     body('planting_date').optional().isISO8601(),
     body('estimated_harvest_date').optional().isISO8601(),
     body('lokasi_bedeng').optional().trim(),
@@ -181,7 +188,7 @@ plantsRouter.put(
 
       const b = req.body as Record<string, string | undefined>;
       const {
-        name, type, lokasi_bedeng, planting_date,
+        name, type, speciesId, lokasi_bedeng, planting_date,
         estimated_harvest_date, photo_url, description,
         cara_tanam, manfaat, catatan_pengelola, status,
       } = b;
@@ -191,6 +198,7 @@ plantsRouter.put(
         data: {
           ...(name && { name }),
           ...(type && { type }),
+          ...(speciesId !== undefined && { speciesId: speciesId || null }),
           ...(lokasi_bedeng !== undefined && { lokasi_bedeng }),
           ...(planting_date && { planting_date: new Date(planting_date) }),
           ...(estimated_harvest_date && {

@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import { plantsRouter } from './routes/plants';
 import { kebunRouter } from './routes/kebun';
 import { uploadRouter } from './routes/upload';
+import { speciesRouter } from './routes/species';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { requireAdmin } from './middleware/auth';
 import { prisma } from './lib/prisma';
@@ -59,6 +60,7 @@ app.get('/api/auth/verify', requireAdmin, (req: any, res) => {
 app.use('/api/plants', plantsRouter);
 app.use('/api/kebun', kebunRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/species', speciesRouter);
 
 // ─── Error Handlers ───────────────────────────────────────────────────────────
 app.use(notFoundHandler);
