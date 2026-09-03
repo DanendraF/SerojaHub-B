@@ -46,6 +46,7 @@ uploadRouter.post(
       res.status(201).json({
         success: true,
         message: 'Foto berhasil diupload.',
+        url: publicUrl,
         data: { url: publicUrl, filename },
       });
     } catch (err) {
