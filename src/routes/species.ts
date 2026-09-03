@@ -28,7 +28,7 @@ speciesRouter.get('/', async (_req: Request, res: Response, next: NextFunction) 
 speciesRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const species = await prisma.plantSpecies.findUnique({
-      where: { id: req.params.id },
+      where: { id: str(req.params.id) },
       include: {
         plants: {
           orderBy: { planting_date: 'desc' },
@@ -74,7 +74,7 @@ speciesRouter.put('/:id', requireAdmin, async (req: Request, res: Response, next
   try {
     const { name, category, description, manfaat, cara_tanam, photo_url } = req.body;
     const species = await prisma.plantSpecies.update({
-      where: { id: req.params.id },
+      where: { id: str(req.params.id) },
       data: {
         ...(name && { name: str(name) }),
         ...(category && { category: str(category) }),
@@ -95,10 +95,10 @@ speciesRouter.delete('/:id', requireAdmin, async (req: Request, res: Response, n
   try {
     // Lepaskan relasi plant terlebih dahulu
     await prisma.plant.updateMany({
-      where: { speciesId: req.params.id },
+      where: { speciesId: str(req.params.id) },
       data: { speciesId: null },
     });
-    await prisma.plantSpecies.delete({ where: { id: req.params.id } });
+    await prisma.plantSpecies.delete({ where: { id: str(req.params.id) } });
     res.json({ success: true, message: 'Jenis tanaman berhasil dihapus' });
   } catch (err) {
     next(err);
