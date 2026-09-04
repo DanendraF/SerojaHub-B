@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+﻿import { PrismaClient } from '@prisma/client';
 
-// Singleton pattern — satu koneksi Prisma untuk seluruh aplikasi
+// Singleton pattern - satu koneksi Prisma untuk seluruh aplikasi
 declare global {
   // eslint-disable-next-line no-var
   var __prisma: PrismaClient | undefined;

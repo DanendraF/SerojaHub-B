@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "seroja-backend",
   "version": "1.0.0",
-  "description": "Backend API untuk Seroja Knowledge Hub — Express + Prisma + Supabase",
+  "description": "Backend API untuk Seroja Knowledge Hub - Express + Prisma + Supabase",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",

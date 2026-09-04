@@ -1,4 +1,4 @@
-﻿# Seroja Knowledge Hub — Backend
+﻿# Seroja Knowledge Hub - Backend
 
 RESTful API backend untuk Kebun Komunitas Seroja. Dibangun menggunakan Express.js, TypeScript, Prisma ORM, dan database Supabase (PostgreSQL).
 

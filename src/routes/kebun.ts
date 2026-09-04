@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+﻿import { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
 import { requireAdmin } from '../middleware/auth';
@@ -64,7 +64,7 @@ kebunRouter.put(
       const { nama, deskripsi, lokasi, luas_area, visi, misi, foto_url, founded_at } =
         req.body;
 
-      // Upsert — update jika sudah ada, buat baru jika belum
+      // Upsert - update jika sudah ada, buat baru jika belum
       const existing = await prisma.gardenProfile.findFirst();
 
       const upsertData = {
