@@ -1,11 +1,12 @@
-﻿import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import { requireAdmin } from '../middleware/auth';
 
 export const speciesRouter = Router();
 
 // Helper
-const str = (v: unknown) => (typeof v === 'string' ? v.trim() : undefined);
+const str = (v: unknown): string | undefined => (typeof v === 'string' ? v.trim() : undefined);
+const reqStr = (v: unknown): string => (typeof v === 'string' ? v.trim() : String(v ?? ''));
 
 // ─── GET /api/species ─────────────────────────────────
 // Daftar semua jenis tanaman + jumlah bedeng aktif
@@ -28,7 +29,7 @@ speciesRouter.get('/', async (_req: Request, res: Response, next: NextFunction) 
 speciesRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const species = await prisma.plantSpecies.findUnique({
-      where: { id: str(req.params.id) },
+      where: { id: reqStr(req.params.id) },
       include: {
         plants: {
           orderBy: { planting_date: 'desc' },
@@ -74,7 +75,7 @@ speciesRouter.put('/:id', requireAdmin, async (req: Request, res: Response, next
   try {
     const { name, category, description, manfaat, cara_tanam, photo_url } = req.body;
     const species = await prisma.plantSpecies.update({
-      where: { id: str(req.params.id) },
+      where: { id: reqStr(req.params.id) },
       data: {
         ...(name && { name: str(name) }),
         ...(category && { category: str(category) }),
@@ -95,10 +96,10 @@ speciesRouter.delete('/:id', requireAdmin, async (req: Request, res: Response, n
   try {
     // Lepaskan relasi plant terlebih dahulu
     await prisma.plant.updateMany({
-      where: { speciesId: str(req.params.id) },
+      where: { speciesId: reqStr(req.params.id) },
       data: { speciesId: null },
     });
-    await prisma.plantSpecies.delete({ where: { id: str(req.params.id) } });
+    await prisma.plantSpecies.delete({ where: { id: reqStr(req.params.id) } });
     res.json({ success: true, message: 'Jenis tanaman berhasil dihapus' });
   } catch (err) {
     next(err);
